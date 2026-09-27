@@ -424,6 +424,17 @@ UEBERGABE
 
 cat /opt/hoheitki/UEBERGABE.txt
 
+# إشعار HoheitKI API إن السيرفر جاهز → يضيف العميل لـ Brevo Sequence
+HOHEITKI_API="https://api.hoheitki.com/api/v1/service"
+if [ -n "$CLIENT_TOKEN" ]; then
+    log_info "Benachrichtige HoheitKI API..."
+    curl -s -X POST "${HOHEITKI_API}/webhook/server-ready" \
+        -H "Content-Type: application/x-www-form-urlencoded" \
+        -d "token=${CLIENT_TOKEN}&server_ip=${SERVER_IP}&domain=${DOMAIN}" \
+        > /dev/null && log_ok "API benachrichtigt — Brevo Sequence gestartet" || \
+        log_warn "API nicht erreichbar — manuell prüfen"
+fi
+
 # إرسال Email للعميل والـ Admin
 if [ -n "$BREVO_KEY" ] && [ -n "$CLIENT_EMAIL" ]; then
     EMAIL_HTML="<div style='font-family:Arial;max-width:600px;background:#050608;color:#e2e8f0;border-radius:8px;overflow:hidden'>
